@@ -27,15 +27,16 @@
   <meta name="twitter:image" content="https://vaneitosta.github.io/projeto-sincronia/assets/social-preview-v2.jpg">
   <meta name="twitter:image:alt" content="SINCRONIA. Um instante para você, com fundo lilás suave.">
   <title>Sincronia — Um encontro com seus próprios pensamentos</title>
-  <link rel="stylesheet" href="css/styles.css?v=20261027-cartoes">
-  <script src="js/main.js?v=20261027-refino" defer></script>
-  <script src="js/cards.js?v=20261027-cartoes" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261027-luz">
+  <script src="js/main.js?v=20261027-controles" defer></script>
+  <script src="js/cards.js?v=20261027-controles" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
   <div id="wallpaper" class="wallpaper" aria-hidden="true"></div>
   <header class="site-header">
     <a class="wordmark" href="#main-content" aria-label="Sincronia, conteúdo principal">SINCRONIA</a>
+    <nav class="corner-tools" aria-label="Controles do Sincronia">      <button id="access-toggle" class="access-toggle secondary corner-action" type="button" aria-label="Abrir configurações" title="Configurações" aria-haspopup="dialog" aria-expanded="false" aria-controls="access-panel"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 3-.6 2.3-2 .9-2.1-.6-2 3.4 1.5 1.7v2.4L2.3 15l2 3.4 2.1-.6 2 .9L9 21h4l.6-2.3 2-.9 2.1.6 2-3.4-1.5-1.7v-2.4l1.5-1.7-2-3.4-2.1.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg><span>Configurações</span></button><button id="themes-shortcut" class="secondary corner-action" type="button" aria-label="Abrir temas" aria-haspopup="dialog" aria-expanded="false" aria-controls="access-panel"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z"/></svg><span>Temas</span></button>      <button id="quick-sound" class="secondary quick-sound corner-action" type="button" aria-pressed="false" aria-label="Ativar som breve das mensagens"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg><span>Som desligado</span></button><button id="info-shortcut" class="secondary corner-action" type="button" aria-label="Abrir informações" aria-haspopup="dialog" aria-expanded="false" aria-controls="access-panel"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg><span>Informações</span></button></nav>
   </header>
   <svg id="atmosphere-art" class="atmosphere-art" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
   <main id="main-content" tabindex="-1" aria-labelledby="site-title">
@@ -66,16 +67,6 @@
       <p>O endereço desenhado na imagem não é clicável. Use a legenda ou os recursos de link do aplicativo, quando disponíveis.</p>
       <label for="card-caption">Legenda com link do site</label><textarea id="card-caption" readonly></textarea>
     </section>
-    <section class="atmosphere-picker" aria-labelledby="atmosphere-picker-title">
-      <button id="quick-sound" class="secondary quick-sound" type="button" aria-pressed="false" aria-label="Ativar som breve das mensagens"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg><span>Som desligado</span></button>
-      <h2 id="atmosphere-picker-title">Escolha sua atmosfera</h2>
-      <div class="atmosphere-choices" role="group" aria-label="Atmosferas em destaque">
-        <button class="atmosphere-choice" type="button" data-featured-theme="aurora" aria-pressed="false"><span class="atmosphere-swatch swatch-bruma" aria-hidden="true"></span><span>Bruma Lilás</span></button>
-        <button class="atmosphere-choice" type="button" data-featured-theme="oceano" aria-pressed="false"><span class="atmosphere-swatch swatch-mare" aria-hidden="true"></span><span>Maré Serena</span></button>
-        <button class="atmosphere-choice" type="button" data-featured-theme="solar" aria-pressed="false"><span class="atmosphere-swatch swatch-luz" aria-hidden="true"></span><span>Luz da Manhã</span></button>
-      </div>
-      <p id="featured-theme-status" class="featured-theme-status"></p>
-    </section>
     <section id="manual-copy" class="manual-copy" aria-labelledby="manual-title" hidden>
       <h2 id="manual-title">Copiar manualmente</h2>
       <label for="copy-text">Selecione o texto e use o comando de copiar do seu dispositivo.</label>
@@ -84,7 +75,7 @@
     </section>
     <noscript><p>Ative o JavaScript no navegador para sortear mensagens e utilizar os controles de letras e contraste.</p></noscript>
     <div class="access">
-      <button id="access-toggle" class="access-toggle secondary" type="button" aria-label="Abrir configurações" title="Configurações" aria-haspopup="dialog" aria-expanded="false" aria-controls="access-panel"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 3-.6 2.3-2 .9-2.1-.6-2 3.4 1.5 1.7v2.4L2.3 15l2 3.4 2.1-.6 2 .9L9 21h4l.6-2.3 2-.9 2.1.6 2-3.4-1.5-1.7v-2.4l1.5-1.7-2-3.4-2.1.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button>
+
       <dialog id="access-panel" aria-labelledby="access-title" hidden>
         <header class="settings-header"><h2 id="access-title" tabindex="-1">Configurações</h2><button id="close-access" class="secondary icon-close" type="button" aria-label="Fechar configurações" title="Fechar configurações">×</button></header>
         <nav class="settings-navigation" aria-label="Categorias das configurações">
@@ -92,6 +83,7 @@
           <button type="button" class="secondary" data-settings-category="appearance" aria-pressed="false">Aparência</button>
           <button type="button" class="secondary" data-settings-category="sound" aria-pressed="false">Som</button>
           <button type="button" class="secondary" data-settings-category="preferences" aria-pressed="false">Preferências</button>
+          <button type="button" class="secondary" data-settings-category="information" aria-pressed="false">Informações</button>
         </nav>
         <div class="settings-content" tabindex="0" role="region" aria-label="Opções da categoria selecionada">
         <p data-settings-note="accessibility">O site pode ser utilizado sem áudio ou comandos de voz. As mensagens são escritas e podem ser lidas por tecnologias assistivas.</p>
@@ -121,6 +113,16 @@
           </div>
         </section>
         <section class="theme-settings" aria-labelledby="theme-title">
+              <section class="atmosphere-picker" aria-labelledby="atmosphere-picker-title">
+      <h2 id="atmosphere-picker-title">Escolha sua atmosfera</h2>
+      <div class="atmosphere-choices" role="group" aria-label="Atmosferas em destaque">
+        <button class="atmosphere-choice" type="button" data-featured-theme="aurora" aria-pressed="false"><span class="atmosphere-swatch swatch-bruma" aria-hidden="true"></span><span>Bruma Lilás</span></button>
+        <button class="atmosphere-choice" type="button" data-featured-theme="oceano" aria-pressed="false"><span class="atmosphere-swatch swatch-mare" aria-hidden="true"></span><span>Maré Serena</span></button>
+        <button class="atmosphere-choice" type="button" data-featured-theme="solar" aria-pressed="false"><span class="atmosphere-swatch swatch-luz" aria-hidden="true"></span><span>Luz da Manhã</span></button>
+      </div>
+      <p id="featured-theme-status" class="featured-theme-status"></p>
+    </section>
+
           <h3 id="theme-title">Atmosferas</h3>
           <p>Bruma Lilás, Maré Serena e Luz da Manhã são os destaques dos temas Aurora, Oceano e Solar. Os 12 temas mensais também continuam disponíveis.</p>
           <label for="theme-mode">Seleção do tema</label>
@@ -156,7 +158,7 @@
             <option value="auto">Automática</option>
             <option value="economy">Econômica</option>
             <option value="balanced">Equilibrada</option>
-            <option value="maximum">Máxima</option>
+            <option value="maximum">Ultra · luz suave</option>
           </select>
           <p id="quality-help">Somente os efeitos variam. Mensagens, letras e controles mantêm sua qualidade. Acessibilidade e economia de dados têm prioridade. A avaliação automática é breve e não identifica seu aparelho.</p>
           <p id="quality-status"></p>
@@ -170,6 +172,7 @@
           </div>
           <p id="vibration-availability" role="status"></p>
         </section>
+<section class="information-settings" aria-labelledby="information-title"><h3 id="information-title">Sobre o Sincronia</h3>    <p class="footer-signature">Um instante para você.</p><p>Mensagens para reflexão e acolhimento. Não são previsões, instruções pessoais ou substituto de apoio profissional. Se você estiver em perigo imediato, procure um serviço de emergência. No Brasil, o CVV atende pelo 188.</p><p class="official-site">Site oficial: <a href="https://vaneitosta.github.io/projeto-sincronia/">vaneitosta.github.io/projeto-sincronia</a><br>Gratuito. Não pedimos login, senhas ou pagamentos.</p></section>
         <section class="privacy-settings" aria-labelledby="privacy-title">
           <h3 id="privacy-title">Sua privacidade</h3>
           <p>As mensagens são escolhidas no seu aparelho. O Sincronia não pede cadastro, não usa microfone e não instala cookies de rastreamento.</p>
@@ -191,7 +194,7 @@
         <p id="settings-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
       </dialog>
     </div>
-    <footer><p class="footer-signature">Um instante para você.</p><p>Mensagens para reflexão e acolhimento. Não são previsões, instruções pessoais ou substituto de apoio profissional. Se você estiver em perigo imediato, procure um serviço de emergência. No Brasil, o CVV atende pelo 188.</p><p class="official-site">Site oficial: <a href="https://vaneitosta.github.io/projeto-sincronia/">vaneitosta.github.io/projeto-sincronia</a><br>Gratuito. Não pedimos login, senhas ou pagamentos.</p></footer>
+
   </main>
 </body>
 </html>
