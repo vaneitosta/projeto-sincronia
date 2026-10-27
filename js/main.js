@@ -385,7 +385,12 @@ function refill() {
     [queue[0], queue[queue.length - 1]] = [queue[queue.length - 1], queue[0]];
   }
 }
-function announce(text) { status.textContent = text; }
+function announce(text) {
+  const inSettings = panel.open;
+  // Conteúdo fora de um diálogo modal fica inerte, inclusive para leitores de tela.
+  status.textContent = inSettings ? "" : text;
+  byId("settings-status").textContent = inSettings ? text : "";
+}
 function closeResetConfirmation(restoreFocus = true) {
   byId("reset-confirm").hidden = true;
   byId("reset-settings").setAttribute("aria-expanded", "false");
@@ -395,7 +400,10 @@ function closeSettings() {
   stopSpeech();
   if (demoTheme) closeDemo();
   closeResetConfirmation(false);
+  if (panel.open) panel.close();
   panel.hidden = true;
+  document.body.classList.remove("settings-open");
+  byId("settings-status").textContent = "";
   access.setAttribute("aria-expanded", "false");
   access.focus();
 }
@@ -412,9 +420,50 @@ access.addEventListener("click", () => {
   ensureThemeOptions();
   syncPreferences();
   panel.hidden = false;
+  panel.showModal();
+  document.body.classList.add("settings-open");
+  byId("access-title").focus();
   prepareSpeech();
   access.setAttribute("aria-expanded", String(!panel.hidden));
 });
+function dismissSettingsLayer() {
+  if (!byId("reset-confirm").hidden) closeResetConfirmation();
+  else if (demoTheme) {
+    closeDemo();
+    byId("demo-toggle").focus();
+  } else closeSettings();
+}
+panel.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  dismissSettingsLayer();
+});
+const settingsCategories = {
+  accessibility: [".reading-settings", ".appearance-settings"],
+  appearance: [".theme-settings", ".quality-settings"],
+  sound: [".sensory-settings"],
+  preferences: [".reset-settings"]
+};
+function selectSettingsCategory(category) {
+  if (!Object.hasOwn(settingsCategories, category)) return;
+  // Sair da prévia restaura as opções antes de mostrar outra categoria.
+  if (category !== "appearance" && demoTheme) closeDemo();
+  closeResetConfirmation(false);
+  for (const button of panel.querySelectorAll("[data-settings-category]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.settingsCategory === category));
+  }
+  for (const [key, selectors] of Object.entries(settingsCategories)) {
+    for (const selector of selectors) panel.querySelector(selector).hidden = key !== category;
+  }
+  for (const note of panel.querySelectorAll("[data-settings-note]")) {
+    note.hidden = note.dataset.settingsNote !== category;
+  }
+  byId("settings-status").textContent = "";
+  panel.querySelector(".settings-content").scrollTop = 0;
+}
+for (const button of panel.querySelectorAll("[data-settings-category]")) {
+  button.addEventListener("click", () => selectSettingsCategory(button.dataset.settingsCategory));
+}
+selectSettingsCategory("accessibility");
 const runningAnimations = new Set();
 const responseOwners = new Map();
 function stopMessageAnimation() {
@@ -734,6 +783,9 @@ function playMonthlySound() {
 }
 let vibrationEnabled = false;
 byId("vibration").hidden = typeof navigator.vibrate !== "function";
+byId("vibration-availability").textContent = typeof navigator.vibrate === "function"
+  ? "A vibração é opcional e depende também das configurações do aparelho."
+  : "Este navegador não oferece vibração para o site. Som e mensagens continuam disponíveis.";
 byId("vibration").addEventListener("click", () => {
   vibrationEnabled = !vibrationEnabled;
   byId("vibration").setAttribute("aria-pressed", String(vibrationEnabled));
@@ -832,15 +884,12 @@ share.addEventListener("click", async () => {
 // Atalhos direcionais complementam os controles nativos; não prendem o foco.
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    if (!byId("reset-confirm").hidden && byId("reset-confirm").contains(document.activeElement)) {
-      closeResetConfirmation();
+    if (panel.open) {
+      // Evita que o mesmo Escape feche a confirmação e também o diálogo nativo.
+      event.preventDefault();
+      dismissSettingsLayer();
     } else if (!byId("manual-copy").hidden && byId("manual-copy").contains(document.activeElement)) {
       byId("close-copy").click();
-    } else if (demoTheme && byId("demo-panel").contains(document.activeElement)) {
-      closeDemo();
-      byId("demo-toggle").focus();
-    } else if (!panel.hidden && panel.contains(document.activeElement)) {
-      closeSettings();
     }
     return;
   }
@@ -848,7 +897,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
   if (event.target.matches("select, textarea, input")) return;
   const controls = Array.from(document.querySelectorAll("button, select"))
-    .filter(control => !control.disabled && control.getClientRects().length > 0);
+    .filter(control => !control.disabled && control.getClientRects().length > 0 && (!panel.open || panel.contains(control)));
   const index = controls.indexOf(document.activeElement);
   if (index === -1) return;
   const next = index + (event.key === "ArrowDown" ? 1 : -1);
