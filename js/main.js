@@ -963,22 +963,38 @@ async function copyText(text, source, success) {
 copy.addEventListener("click", () => {
   if (output.textContent) copyText(output.textContent, copy, "Mensagem copiada.");
 });
+let sharePending = false;
 share.addEventListener("click", async () => {
-  if (!output.textContent) return;
+  if (!output.textContent || sharePending) return;
   const payload = {text: output.textContent};
   const publicURL = configuredPublicURL();
   if (publicURL) payload.url = publicURL;
   if (typeof navigator.share === "function") {
+    sharePending = true;
+    share.disabled = true;
     try {
       await navigator.share(payload);
       announce("Mensagem compartilhada.");
       return;
     } catch (error) {
-      if (error && error.name === "AbortError") { announce("Compartilhamento cancelado."); return; }
+      const reason = error && error.name;
+      if (reason === "AbortError") { announce("Compartilhamento cancelado ou sem destino disponível. Você pode usar Copiar."); return; }
+      const explanation = reason === "NotAllowedError"
+        ? "O navegador bloqueou o compartilhamento neste contexto."
+        : reason === "InvalidStateError"
+          ? "Já existe um compartilhamento em andamento ou a página não está ativa."
+          : reason === "TypeError"
+            ? "O navegador não aceitou os dados para compartilhar."
+            : "Não foi possível abrir ou concluir o compartilhamento do sistema.";
+      announce(explanation + " Use Copiar para enviar a mensagem pelo aplicativo que preferir.");
+      return;
+    } finally {
+      sharePending = false;
+      share.disabled = !output.textContent;
     }
   }
   await copyText(payload.text + (publicURL ? "\n" + publicURL : ""), share,
-    "Compartilhamento nativo indisponível. Mensagem copiada para compartilhar.");
+    "Este navegador não oferece compartilhamento nativo. Mensagem copiada; cole no aplicativo que preferir.");
 });
 // Atalhos direcionais complementam os controles nativos; não prendem o foco.
 document.addEventListener("keydown", (event) => {
