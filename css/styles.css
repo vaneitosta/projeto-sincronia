@@ -373,7 +373,7 @@ body { padding-top: max(5rem, calc(env(safe-area-inset-top) + 4rem)); }
 body.settings-open { overflow: hidden; }
 .access { margin: 0; }
 .access-toggle {
-  position: fixed;
+  position: absolute;
   top: max(.75rem, calc(env(safe-area-inset-top) + .5rem));
   right: max(.75rem, calc(env(safe-area-inset-right) + .5rem));
   z-index: 5;
@@ -457,6 +457,17 @@ body.settings-open { position: fixed; top: var(--settings-scroll-top, 0px); left
 
 /* Composição aprovada: o fundo é uma imagem; mensagem e controles são HTML. */
 .official-site { margin-top: 1.25rem; }
+.card-panel { max-width: 38rem; margin: 2rem auto; padding: 1.25rem; background: var(--bg); color: var(--ink); border: 1px solid var(--muted); border-radius: 1rem; text-align: left; scroll-margin-top: 1rem; }
+.card-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.card-heading h2 { font: 1.4rem/1.35 Georgia, serif; margin: 0; }
+.card-heading button { padding: .5rem .75rem; font-size: .8rem; }
+.card-panel p { font-size: .9rem; line-height: 1.6; }
+.card-panel label { display: block; margin-block: 1rem .5rem; }
+#card-preview { display: block; max-width: 100%; width: auto; height: auto; max-height: 28rem; margin: 1rem auto; border-radius: .5rem; }
+.card-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+.card-actions :is(button,a) { display: inline-flex; align-items: center; justify-content: center; border-radius: .65rem; font: inherit; font-size: .85rem; text-decoration: none; min-height: 3rem; padding: .65rem 1rem; }
+.card-actions a:focus-visible { outline: .2rem solid currentColor; outline-offset: .2rem; }
+@media (max-width: 40rem) { .message-actions { gap: .75rem; } .card-panel { padding: 1rem; } }
 .official-site a { color: inherit; overflow-wrap: anywhere; text-underline-offset: .2em; }
 .official-site a:focus-visible { outline: .2rem solid currentColor; outline-offset: .2rem; }
 body { padding-top: max(7rem, calc(env(safe-area-inset-top) + 6rem)); }
@@ -504,6 +515,11 @@ h1 { font-size: clamp(2rem, 6vw, 4.5rem); letter-spacing: .1em; line-height: 1.2
 #message:empty::before { content: "Um instante para você."; }
 #receive { min-width: 16rem; padding: .9rem 1.75rem; box-shadow: 0 .3rem 1.5rem #00000009; }
 .message-actions { gap: 1.5rem; margin-top: 1rem; }
+.message-stage { min-height: calc(100svh - 7rem); display: flex; flex-direction: column; justify-content: center; padding-block: 1rem 2rem; overflow-anchor: none; }
+.message-section:has(#message:empty) .message-actions { visibility: hidden; }
+.atmosphere-picker .quick-sound { margin: 0 auto 1.5rem; }
+@media (max-width: 40rem) { .message-stage { min-height: calc(100svh - 6rem); } }
+@media (max-width: 40rem) { .message-actions { gap: .75rem; } }
 .message-actions > button { display: flex; flex-direction: column; align-items: center; gap: .4rem; padding: .25rem; border: 0; border-radius: .5rem; font-size: .8rem; min-width: 4.5rem; background: transparent; }
 .message-actions svg { width: 2.65rem; height: 2.65rem; padding: .65rem; border: 1px solid currentColor; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 1.4; }
 .action-status { font-size: .8rem; margin-block: .5rem; }
