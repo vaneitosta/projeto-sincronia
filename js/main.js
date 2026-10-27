@@ -36,8 +36,8 @@ function afterPaint(task) {
   } else timer = window.setTimeout(run, 0);
   return cancel;
 }
-// Preencher somente com um endereço público explicitamente aprovado.
-const PUBLIC_URL = "";
+// Endereço público do projeto, também incluído nas mensagens compartilhadas.
+const PUBLIC_URL = "https://vaneitosta.github.io/projeto-sincronia/";
 const atmospheres = [
   {name:"Renovação", sound:"brisa", frequency:420, tone:196, art:'<path d="M90 340Q-40 70 200 110Q300 260 90 340ZM760 870Q650 620 910 690Q990 840 760 870Z"/>'},
   {name:"Serenidade", sound:"toque", frequency:680, tone:261.63, art:'<path d="M-60 180Q240 20 190 370T140 720M850 260Q700 440 920 580T900 940"/>'},
@@ -966,9 +966,9 @@ copy.addEventListener("click", () => {
 let sharePending = false;
 share.addEventListener("click", async () => {
   if (!output.textContent || sharePending) return;
-  const payload = {text: output.textContent};
   const publicURL = configuredPublicURL();
-  if (publicURL) payload.url = publicURL;
+  // Manter o link no próprio texto evita perdê-lo em destinos que ignoram url.
+  const payload = {text: output.textContent + (publicURL ? "\n\n" + publicURL : "")};
   if (typeof navigator.share === "function") {
     sharePending = true;
     share.disabled = true;
@@ -993,7 +993,7 @@ share.addEventListener("click", async () => {
       share.disabled = !output.textContent;
     }
   }
-  await copyText(payload.text + (publicURL ? "\n" + publicURL : ""), share,
+  await copyText(payload.text, share,
     "Este navegador não oferece compartilhamento nativo. Mensagem copiada; cole no aplicativo que preferir.");
 });
 // Atalhos direcionais complementam os controles nativos; não prendem o foco.
