@@ -1,1 +1,1 @@
-
+Fundos originais do Sincronia, gerados com ImageGen em outubro de 2026. Cada tema possui versões WebP tiny, small, large, 4k e 8k. A versão tiny é usada em economia de dados. As versões 4K e 8K são ampliações das artes geradas, sem detalhe nativo adicional. Textos e controles são HTML.
