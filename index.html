@@ -7,25 +7,42 @@
   <meta name="color-scheme" content="light">
   <meta name="description" content="Um espaço gratuito de mensagens acolhedoras e reflexão. Um clique, uma mensagem.">
   <title>Sincronia — Um encontro com seus próprios pensamentos</title>
-  <link rel="stylesheet" href="css/styles.css?v=20261027">
-  <script src="js/main.js?v=20261027" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261027-atmosferas">
+  <script src="js/main.js?v=20261027-atmosferas" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
+  <div id="wallpaper" class="wallpaper" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="wordmark" href="#main-content" aria-label="Sincronia, conteúdo principal">SINCRONIA</a>
+    <button id="quick-sound" class="secondary quick-sound" type="button" aria-pressed="false" aria-label="Ativar som breve das mensagens">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg>
+      <span>Som desligado</span>
+    </button>
+  </header>
   <svg id="atmosphere-art" class="atmosphere-art" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
   <main id="main-content" tabindex="-1" aria-labelledby="site-title">
-    <h1 id="site-title">Sincronia</h1>
+    <h1 id="site-title">SINCRONIA</h1>
     <div class="subtitle">Um encontro com seus próprios pensamentos.</div>
     <p class="intro">Às vezes, uma palavra acolhedora pode tornar o dia mais leve.</p>
-    <section aria-labelledby="message-title">
+    <section class="message-section" aria-labelledby="message-title">
       <h2 id="message-title" class="visually-hidden">Mensagem de reflexão</h2>
-    <button id="receive" type="button" aria-controls="message">Receber minha mensagem</button>
     <p id="message" role="status" aria-live="polite" aria-atomic="true"></p>
+    <button id="receive" type="button" aria-controls="message">Receber minha mensagem</button>
     <div class="message-actions" aria-label="Ações da mensagem" role="group">
-      <button id="copy" class="secondary" type="button" disabled>Copiar mensagem</button>
-      <button id="share" class="secondary" type="button" disabled>Compartilhar mensagem</button>
+      <button id="copy" class="secondary" type="button" aria-label="Copiar mensagem" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8" y="7" width="12" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h3"/></svg><span>Copiar</span></button>
+      <button id="share" class="secondary" type="button" aria-label="Compartilhar mensagem" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="5" r="3"/><circle cx="18" cy="19" r="3"/><path d="m9 10 6-4M9 14l6 4"/></svg><span>Compartilhar</span></button>
     </div>
     <p id="action-status" class="action-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
+    <section class="atmosphere-picker" aria-labelledby="atmosphere-picker-title">
+      <h2 id="atmosphere-picker-title">Escolha sua atmosfera</h2>
+      <div class="atmosphere-choices" role="group" aria-label="Atmosferas em destaque">
+        <button class="atmosphere-choice" type="button" data-featured-theme="aurora" aria-pressed="false"><span class="atmosphere-swatch swatch-bruma" aria-hidden="true"></span><span>Bruma Lilás</span></button>
+        <button class="atmosphere-choice" type="button" data-featured-theme="oceano" aria-pressed="false"><span class="atmosphere-swatch swatch-mare" aria-hidden="true"></span><span>Maré Serena</span></button>
+        <button class="atmosphere-choice" type="button" data-featured-theme="solar" aria-pressed="false"><span class="atmosphere-swatch swatch-luz" aria-hidden="true"></span><span>Luz da Manhã</span></button>
+      </div>
+      <p id="featured-theme-status" class="featured-theme-status"></p>
     </section>
     <section id="manual-copy" class="manual-copy" aria-labelledby="manual-title" hidden>
       <h2 id="manual-title">Copiar manualmente</h2>
@@ -73,6 +90,7 @@
         </section>
         <section class="theme-settings" aria-labelledby="theme-title">
           <h3 id="theme-title">Atmosferas</h3>
+          <p>Bruma Lilás, Maré Serena e Luz da Manhã são os destaques dos temas Aurora, Oceano e Solar. Os 12 temas mensais também continuam disponíveis.</p>
           <label for="theme-mode">Seleção do tema</label>
           <select id="theme-mode">
             <option value="auto">Automático por mês</option>
@@ -85,6 +103,9 @@
           </div>
           <button id="random-theme" class="secondary" type="button" hidden>Sortear outro tema</button>
           <p id="theme-current"></p>
+          <h4>Uma atmosfera para cada mês</h4>
+          <p class="monthly-help">No modo automático, a atmosfera acompanha o mês atual. Você também pode escolher qualquer mês abaixo.</p>
+          <div id="monthly-themes" class="monthly-themes" role="group" aria-label="Escolher atmosfera de um mês"></div>
           <button id="demo-toggle" class="secondary" type="button" aria-expanded="false" aria-controls="demo-panel">Abrir demonstração temporária</button>
           <section id="demo-panel" aria-labelledby="demo-title" hidden>
             <h4 id="demo-title">Demonstração temporária</h4>
@@ -132,7 +153,7 @@
         <p id="settings-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
       </dialog>
     </div>
-    <footer>Mensagens para reflexão e acolhimento. Não são previsões, instruções pessoais ou substituto de apoio profissional. Se você estiver em perigo imediato, procure um serviço de emergência. No Brasil, o CVV atende pelo 188.</footer>
+    <footer><p class="footer-signature">Um instante para você.</p><p>Mensagens para reflexão e acolhimento. Não são previsões, instruções pessoais ou substituto de apoio profissional. Se você estiver em perigo imediato, procure um serviço de emergência. No Brasil, o CVV atende pelo 188.</p></footer>
   </main>
 </body>
 </html>
