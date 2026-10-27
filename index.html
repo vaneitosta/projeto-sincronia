@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-quality="economy">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob:; font-src 'self'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="no-referrer">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f8f7f3">
@@ -27,24 +27,21 @@
   <meta name="twitter:image" content="https://vaneitosta.github.io/projeto-sincronia/assets/social-preview-v2.jpg">
   <meta name="twitter:image:alt" content="SINCRONIA. Um instante para você, com fundo lilás suave.">
   <title>Sincronia — Um encontro com seus próprios pensamentos</title>
-  <link rel="stylesheet" href="css/styles.css?v=20261027-refino">
+  <link rel="stylesheet" href="css/styles.css?v=20261027-cartoes">
   <script src="js/main.js?v=20261027-refino" defer></script>
+  <script src="js/cards.js?v=20261027-cartoes" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
   <div id="wallpaper" class="wallpaper" aria-hidden="true"></div>
   <header class="site-header">
     <a class="wordmark" href="#main-content" aria-label="Sincronia, conteúdo principal">SINCRONIA</a>
-    <button id="quick-sound" class="secondary quick-sound" type="button" aria-pressed="false" aria-label="Ativar som breve das mensagens">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg>
-      <span>Som desligado</span>
-    </button>
   </header>
   <svg id="atmosphere-art" class="atmosphere-art" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
   <main id="main-content" tabindex="-1" aria-labelledby="site-title">
+    <div class="message-stage">
     <h1 id="site-title">SINCRONIA</h1>
     <div class="subtitle">Um encontro com seus próprios pensamentos.</div>
-    <p class="intro">Às vezes, uma palavra acolhedora pode tornar o dia mais leve.</p>
     <section class="message-section" aria-labelledby="message-title">
       <h2 id="message-title" class="visually-hidden">Mensagem de reflexão</h2>
     <p id="message" role="status" aria-live="polite" aria-atomic="true"></p>
@@ -52,10 +49,25 @@
     <div class="message-actions" aria-label="Ações da mensagem" role="group">
       <button id="copy" class="secondary" type="button" aria-label="Copiar mensagem" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8" y="7" width="12" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h3"/></svg><span>Copiar</span></button>
       <button id="share" class="secondary" type="button" aria-label="Compartilhar mensagem" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="5" r="3"/><circle cx="18" cy="19" r="3"/><path d="m9 10 6-4M9 14l6 4"/></svg><span>Compartilhar</span></button>
+      <button id="create-card" class="secondary" type="button" aria-label="Criar cartão da mensagem para redes sociais" aria-expanded="false" aria-controls="card-panel" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Cartão</span></button>
     </div>
     <p id="action-status" class="action-status" role="status" aria-live="polite" aria-atomic="true"></p>
     </section>
+    </div>
+    <section id="card-panel" class="card-panel" aria-labelledby="card-title" hidden>
+      <div class="card-heading"><h2 id="card-title" tabindex="-1">Sua mensagem em imagem</h2><button id="close-card" class="secondary" type="button" aria-label="Fechar cartão">Fechar</button></div>
+      <p>Leve a frase e a atmosfera para Stories, Status ou uma publicação. A imagem é criada no seu aparelho.</p>
+      <label for="card-format">Formato</label>
+      <select id="card-format"><option value="story">Stories / Status · vertical</option><option value="feed">Publicação · retrato</option><option value="square">Publicação · quadrado</option></select>
+      <p id="card-status" role="status" aria-live="polite"></p>
+      <img id="card-preview" alt="" hidden>
+      <div class="card-actions"><button id="share-card" type="button" disabled>Compartilhar imagem</button><a id="download-card" class="secondary" download hidden>Baixar imagem</a><button id="copy-card-caption" class="secondary" type="button">Copiar legenda e link</button></div>
+      <p id="card-share-help">Os aplicativos disponíveis são definidos pelo seu aparelho. Se a rede desejada não aparecer, baixe a imagem e selecione-a no aplicativo para publicar.</p>
+      <p>O endereço desenhado na imagem não é clicável. Use a legenda ou os recursos de link do aplicativo, quando disponíveis.</p>
+      <label for="card-caption">Legenda com link do site</label><textarea id="card-caption" readonly></textarea>
+    </section>
     <section class="atmosphere-picker" aria-labelledby="atmosphere-picker-title">
+      <button id="quick-sound" class="secondary quick-sound" type="button" aria-pressed="false" aria-label="Ativar som breve das mensagens"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg><span>Som desligado</span></button>
       <h2 id="atmosphere-picker-title">Escolha sua atmosfera</h2>
       <div class="atmosphere-choices" role="group" aria-label="Atmosferas em destaque">
         <button class="atmosphere-choice" type="button" data-featured-theme="aurora" aria-pressed="false"><span class="atmosphere-swatch swatch-bruma" aria-hidden="true"></span><span>Bruma Lilás</span></button>
