@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR" data-quality="economy">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f3">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Um espaço gratuito de mensagens acolhedoras e reflexão. Um clique, uma mensagem.">
+  <title>Sincronia — Um encontro com seus próprios pensamentos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
+  <svg id="atmosphere-art" class="atmosphere-art" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
+  <main id="main-content" tabindex="-1" aria-labelledby="site-title">
+    <h1 id="site-title">Sincronia</h1>
+    <div class="subtitle">Um encontro com seus próprios pensamentos.</div>
+    <p class="intro">Às vezes, uma palavra acolhedora pode tornar o dia mais leve.</p>
+    <section aria-labelledby="message-title">
+      <h2 id="message-title" class="visually-hidden">Mensagem de reflexão</h2>
+    <button id="receive" type="button" aria-controls="message">Receber minha mensagem</button>
+    <p id="message" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div class="message-actions" aria-label="Ações da mensagem" role="group">
+      <button id="copy" class="secondary" type="button" disabled>Copiar mensagem</button>
+      <button id="share" class="secondary" type="button" disabled>Compartilhar mensagem</button>
+    </div>
+    <p id="action-status" class="action-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
+    <section id="manual-copy" class="manual-copy" aria-labelledby="manual-title" hidden>
+      <h2 id="manual-title">Copiar manualmente</h2>
+      <label for="copy-text">Selecione o texto e use o comando de copiar do seu dispositivo.</label>
+      <textarea id="copy-text" readonly rows="4"></textarea>
+      <button id="close-copy" class="secondary" type="button">Fechar cópia manual</button>
+    </section>
+    <noscript><p>Ative o JavaScript no navegador para sortear mensagens e utilizar os controles de letras e contraste.</p></noscript>
+    <div class="access">
+      <button id="access-toggle" class="access-toggle secondary" type="button" aria-expanded="false" aria-controls="access-panel">Opções de acessibilidade</button>
+      <section id="access-panel" aria-labelledby="access-title" hidden>
+        <h2 id="access-title">Opções de acessibilidade</h2>
+        <p>O site pode ser utilizado sem áudio ou comandos de voz. As mensagens são escritas e podem ser lidas por tecnologias assistivas.</p>
+        <section class="reading-settings" aria-labelledby="reading-title">
+          <h3 id="reading-title">Leitura em voz alta</h3>
+          <p id="speech-help">A leitura começa somente quando você pede. Se já utiliza um leitor de tela, pode continuar usando-o sem ativar esta opção. Trocar a mensagem interrompe a leitura.</p>
+          <div class="options" role="group" aria-label="Comandos de leitura">
+            <button id="read-message" type="button" aria-describedby="speech-availability" disabled>Ler mensagem em voz alta</button>
+            <button id="stop-reading" type="button" disabled>Interromper leitura</button>
+            <button id="repeat-reading" type="button" disabled>Repetir leitura</button>
+          </div>
+          <p id="speech-availability">A leitura depende de uma voz local em português disponível no navegador.</p>
+          <p id="speech-status">Leitura desligada.</p>
+        </section>
+        <section class="appearance-settings" aria-labelledby="appearance-title">
+          <h3 id="appearance-title">Texto e aparência</h3>
+          <label for="size">Tamanho do texto</label>
+          <select id="size">
+            <option value="normal">Normal</option>
+            <option value="large">Grande</option>
+            <option value="extra-large">Extragrande</option>
+          </select>
+          <div class="options">
+            <button type="button" id="contrast" aria-pressed="false">Alto contraste</button>
+            <button type="button" id="decoration" aria-pressed="false">Ocultar efeitos decorativos</button>
+            <button type="button" id="motion" aria-pressed="false">Reduzir movimento</button>
+          </div>
+        </section>
+        <section class="theme-settings" aria-labelledby="theme-title">
+          <h3 id="theme-title">Atmosferas</h3>
+          <label for="theme-mode">Seleção do tema</label>
+          <select id="theme-mode">
+            <option value="auto">Automático por mês</option>
+            <option value="random">Aleatório entre os 15 temas</option>
+            <option value="manual">Manual</option>
+          </select>
+          <div id="manual-theme-row" hidden>
+            <label for="theme-choice">Escolher tema</label>
+            <select id="theme-choice"></select>
+          </div>
+          <button id="random-theme" class="secondary" type="button" hidden>Sortear outro tema</button>
+          <p id="theme-current"></p>
+          <button id="demo-toggle" class="secondary" type="button" aria-expanded="false" aria-controls="demo-panel">Abrir demonstração temporária</button>
+          <section id="demo-panel" aria-labelledby="demo-title" hidden>
+            <h4 id="demo-title">Demonstração temporária</h4>
+            <p>A prévia não altera suas preferências salvas nem o ciclo das mensagens. Ao sair, suas configurações anteriores serão restauradas.</p>
+            <label for="demo-theme">Tema da prévia</label>
+            <select id="demo-theme"></select>
+            <button id="demo-play" class="secondary" type="button">Experimentar interação</button>
+            <p id="demo-message" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button id="demo-close" class="secondary" type="button">Encerrar demonstração</button>
+          </section>
+        </section>
+        <section class="quality-settings" aria-labelledby="quality-title">
+          <h3 id="quality-title">Qualidade visual</h3>
+          <label for="quality-mode">Detalhes e efeitos</label>
+          <select id="quality-mode" aria-describedby="quality-help quality-status">
+            <option value="auto">Automática</option>
+            <option value="economy">Econômica</option>
+            <option value="balanced">Equilibrada</option>
+            <option value="maximum">Máxima</option>
+          </select>
+          <p id="quality-help">Somente os efeitos variam. Mensagens, letras e controles mantêm sua qualidade. Acessibilidade e economia de dados têm prioridade. A avaliação automática é breve e não identifica seu aparelho.</p>
+          <p id="quality-status"></p>
+        </section>
+        <section class="sensory-settings" aria-labelledby="sensory-title">
+          <h3 id="sensory-title">Sons e vibração</h3>
+          <p id="sensory-help">Som de ambiente breve e vibração são opcionais e começam desligados. Quando ativados, acompanham o botão de receber mensagem. Durante a leitura em voz alta, o efeito sonoro fica em silêncio. Ao sair desta aba, leitura, som e vibração são interrompidos. Som e vibração permanecem desligados ao retornar; ative-os novamente se desejar.</p>
+          <div class="options">
+            <button type="button" id="sound" aria-pressed="false">Som: desligado</button>
+            <button type="button" id="vibration" aria-pressed="false" hidden>Vibração: desligada</button>
+          </div>
+        </section>
+        <section class="reset-settings" aria-labelledby="reset-title">
+          <h3 id="reset-title">Restaurar preferências</h3>
+          <button id="reset-settings" class="secondary" type="button" aria-expanded="false" aria-controls="reset-confirm">Restaurar configurações padrão</button>
+          <div id="reset-confirm" role="group" aria-labelledby="reset-question" hidden>
+            <p id="reset-question">Restaurar apenas as preferências do Sincronia? Suas mensagens e os dados de outros sites serão preservados.</p>
+            <button id="confirm-reset" class="secondary" type="button">Sim, restaurar preferências</button>
+            <button id="cancel-reset" class="secondary" type="button">Cancelar restauração</button>
+          </div>
+        </section>
+        <p>Tradução em Libras ainda não está disponível. Todas as instruções e mensagens estão em texto.</p>
+        <p id="storage-help"></p>
+        <button id="close-access" class="secondary" type="button">Fechar opções de acessibilidade</button>
+      </section>
+    </div>
+    <footer>Mensagens para reflexão e acolhimento. Não são previsões, instruções pessoais ou substituto de apoio profissional. Se você estiver em perigo imediato, procure um serviço de emergência. No Brasil, o CVV atende pelo 188.</footer>
+  </main>
+</body>
+</html>
