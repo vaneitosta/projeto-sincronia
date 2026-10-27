@@ -1,4 +1,4 @@
-/* Sincronia 1.6 — identidade da 1.3, layout fluido sem detectar dispositivos. */
+/* Sincronia — layout fluido e atmosferas com recursos opcionais. */
 :root {
   --bg: #f5f7f3;
   --ink: #35453f;
@@ -444,4 +444,108 @@ body.settings-open { overflow: hidden; }
 @media (forced-colors: active) {
   #access-panel { border: 1px solid CanvasText; }
   .settings-navigation button[aria-pressed="true"] { border: 3px solid Highlight; }
+}
+
+/* Composição aprovada: o fundo é uma imagem; mensagem e controles são HTML. */
+body { padding-top: max(7rem, calc(env(safe-area-inset-top) + 6rem)); }
+main { max-width: 56rem; }
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 38%, #ffffffe0, #ffffff6b 65%, #ffffff45);
+}
+.atmosphere-art, body::before, body::after { display: none !important; }
+.site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: max(1rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) 1rem max(1.25rem, env(safe-area-inset-left));
+}
+.wordmark { font-family: Georgia, serif; font-size: 1.1rem; letter-spacing: .13em; color: var(--ink); text-decoration: none; }
+.wordmark:focus-visible { outline: .2rem solid var(--ink); outline-offset: .3rem; }
+.quick-sound { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; margin-right: 3.8rem; padding: .5rem 1rem; font-size: .8rem; background: #ffffff96; border-color: var(--muted); }
+.quick-sound svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 1.5; flex-shrink: 0; }
+.quick-sound .sound-waves, .quick-sound[aria-pressed="true"] .sound-off { display: none; }
+.quick-sound[aria-pressed="true"] .sound-waves { display: block; }
+.access-toggle { background: transparent; border-color: transparent; width: 3rem; height: 3rem; min-height: 3rem; padding: .7rem; }
+h1 { font-size: clamp(2rem, 6vw, 4.5rem); letter-spacing: .1em; line-height: 1.2; margin-bottom: .5rem; }
+.subtitle { font-size: 1rem; margin-bottom: 0; }
+.intro { font-size: .9rem; line-height: 1.6; margin: 1rem auto 0; max-width: 44ch; }
+#message { font-size: clamp(1.5rem, 2.6vw, 2.8rem); line-height: 1.4; max-width: 28ch; margin: clamp(1.75rem, 4vh, 3rem) auto 1.5rem; min-height: 2.8em; display: grid; align-content: center; }
+#message:empty::before { content: "Um instante para você."; }
+#receive { min-width: 16rem; padding: .9rem 1.75rem; box-shadow: 0 .3rem 1.5rem #00000009; }
+.message-actions { gap: 1.5rem; margin-top: 1rem; }
+.message-actions > button { display: flex; flex-direction: column; align-items: center; gap: .4rem; padding: .25rem; border: 0; border-radius: .5rem; font-size: .8rem; min-width: 4.5rem; background: transparent; }
+.message-actions svg { width: 2.65rem; height: 2.65rem; padding: .65rem; border: 1px solid currentColor; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.action-status { font-size: .8rem; margin-block: .5rem; }
+.atmosphere-picker { margin: 1.5rem auto 0; max-width: 26rem; }
+.atmosphere-picker h2 { display: flex; align-items: center; gap: 1rem; margin: 0 0 1rem; font-size: .85rem; font-weight: 400; letter-spacing: .08em; }
+.atmosphere-picker h2::before, .atmosphere-picker h2::after { content: ""; height: 1px; background: currentColor; opacity: .22; flex: 1; }
+.atmosphere-choices { display: flex; justify-content: center; gap: 1.25rem; }
+.atmosphere-choice { display: flex; flex-direction: column; align-items: center; gap: .55rem; padding: .4rem .2rem; color: var(--ink); background: transparent; border: 0; border-radius: .5rem; font-size: .75rem; line-height: 1.4; flex: 1; }
+.atmosphere-choice:hover { filter: none; background: #ffffff4a; }
+.atmosphere-swatch { display: block; width: 3rem; height: 3rem; border-radius: 50%; box-shadow: inset 0 0 0 1px #ffffff6b; }
+.swatch-bruma { background: radial-gradient(circle at 75% 20%, #fff6ed, transparent 60%), linear-gradient(135deg, #bdadcb, #e7daf3 55%, #d8a8d0); }
+.swatch-mare { background: radial-gradient(circle at 75% 20%, #f2fffc, transparent 65%), linear-gradient(135deg, #80b8bd, #c8e3e1, #a2cfd9); }
+.swatch-luz { background: radial-gradient(circle at 75% 20%, #fffdf1, transparent 65%), linear-gradient(135deg, #d4b081, #f6e7cb, #eed9b5); }
+.atmosphere-choice[aria-pressed="true"] .atmosphere-swatch { outline: 1px solid currentColor; outline-offset: .25rem; }
+.featured-theme-status { min-height: 1.5em; font-size: .7rem; line-height: 1.5; margin: .7rem 0 0; }
+.monthly-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-block: 1rem; }
+.monthly-help { font-size: .85rem; }
+.monthly-themes .month-choice { border: 1px solid var(--muted); padding: .4rem; border-radius: .7rem; text-align: left; font-size: .75rem; }
+.month-choice img { display: block; width: 100%; height: 4rem; object-fit: cover; border-radius: .4rem; margin-bottom: .5rem; }
+.month-choice span { display: block; padding: .25rem; }
+.month-choice[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (forced-colors: active) { .month-choice img { display: none; } }
+footer { max-width: 68ch; font-size: .7rem; line-height: 1.6; margin-top: 1.25rem; }
+footer p { margin: .5rem 0; }
+.footer-signature { font-size: .8rem; letter-spacing: .1em; margin-bottom: .75rem; }
+#access-panel { background: var(--bg); }
+/* O foco permanece claro ao navegar pelo teclado; cliques não deixam molduras. */
+button:focus:not(:focus-visible) { outline: none; }
+@media (max-width: 40rem) {
+  body { padding-inline: 1.1rem; padding-top: max(6rem, calc(env(safe-area-inset-top) + 5rem)); }
+  .site-header { gap: .5rem; padding-left: 1.1rem; }
+  .wordmark { font-size: .8rem; letter-spacing: .08em; }
+  .quick-sound { margin-right: 3rem; font-size: .7rem; padding: .4rem .65rem; gap: .35rem; }
+  .subtitle { font-size: .85rem; max-width: 33ch; margin-inline: auto; }
+  .intro { font-size: .8rem; margin-top: .8rem; }
+  #message { margin-top: 1.75rem; }
+  #receive { min-width: 0; width: min(100%, 18rem); }
+  .atmosphere-choices { gap: .5rem; }
+  .atmosphere-picker { margin-top: 1rem; }
+  .atmosphere-picker h2 { font-size: .75rem; gap: .6rem; }
+  .atmosphere-choice { font-size: .7rem; }
+  .message-actions > button { padding: .25rem; }
+  .settings-open .site-header { visibility: hidden; }
+}
+@media (max-width: 23rem) {
+  .quick-sound span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .quick-sound { border: 0; background: transparent; min-width: 2.75rem; padding: .4rem; }
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  .wallpaper { display: none; }
+  .quick-sound { background: var(--bg); }
+}
+:root.high-contrast .wallpaper, :root.decoration-off .wallpaper { display: none; }
+@media (forced-colors: active) {
+  .atmosphere-choice[aria-pressed="true"] { border: 2px solid Highlight; }
+  .atmosphere-swatch { border: 1px solid CanvasText; forced-color-adjust: none; }
+  .message-actions > button { border: 1px solid ButtonText; }
 }

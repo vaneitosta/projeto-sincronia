@@ -1,4 +1,4 @@
-// Sincronia 1.6.1 — dados originais preservados; recursos sensoriais opcionais.
+// Sincronia — dados originais preservados; atmosferas e recursos sensoriais opcionais.
 (function () {
 "use strict";
 
@@ -68,6 +68,52 @@ themes.push(
 const themeById = (id) => themes.find(theme => theme.id === id);
 const STORAGE_KEY = "sincronia.preferences.v1";
 const defaults = () => ({version:2, textSize:"normal", mode:"auto", quality:"auto", manualTheme:"janeiro", largeText:false, highContrast:false, reducedMotion:false, decorationOff:false});
+const featuredNames = {aurora:"Bruma Lilás", oceano:"Maré Serena", solar:"Luz da Manhã"};
+const wallpaperFamilies = {
+  aurora:"bruma", oceano:"mare", solar:"luz"
+};
+let wallpaperRequest = 0;
+let wallpaperKey = "";
+let wallpaperResizeTimer;
+window.addEventListener("resize", () => {
+  window.clearTimeout(wallpaperResizeTimer);
+  wallpaperResizeTimer = window.setTimeout(updateWallpaper, 150);
+});
+function updateWallpaper() {
+  const wallpaper = byId("wallpaper");
+  const prefs = currentPreferences();
+  const disabled = document.hidden || optionalSuspended || prefs.decorationOff || prefs.highContrast || contrastQuery.matches;
+  wallpaper.hidden = disabled;
+  if (disabled) {
+    wallpaperRequest++;
+    wallpaperKey = "";
+    wallpaper.style.backgroundImage = "none";
+    root.dataset.wallpaper = "off";
+    return;
+  }
+  if (!activeTheme) return;
+  const family = wallpaperFamilies[activeTheme.id] || activeTheme.id;
+  const screenWidth = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+  const size = connection && connection.saveData ? "tiny" : effectiveQuality === "economy" ? "small"
+    : screenWidth > 3840 ? "8k" : screenWidth > 1600 ? "4k" : "large";
+  const key = family + "-" + size;
+  root.dataset.wallpaper = family;
+  if (key === wallpaperKey) return;
+  wallpaperKey = key;
+  const request = ++wallpaperRequest;
+  const url = new URL("assets/wallpapers/" + key + ".webp", document.baseURI).href;
+  const image = new Image();
+  image.onload = () => {
+    if (request !== wallpaperRequest || document.hidden || optionalSuspended) return;
+    wallpaper.style.backgroundImage = 'url("' + url + '")';
+  };
+  image.onerror = () => {
+    if (request !== wallpaperRequest) return;
+    wallpaper.style.backgroundImage = "none";
+    wallpaperKey = "";
+  };
+  image.src = url;
+}
 function validatePreferences(value) {
   if (!value || typeof value !== "object" || ![1,2].includes(value.version)) return defaults();
   const clean = defaults();
@@ -158,6 +204,7 @@ function applyQuality() {
     ? "Seleção automática conservadora; sem monitoramento contínuo." : "Escolha manual."));
   if (byId("quality-status").textContent !== text) byId("quality-status").textContent = text;
   if (activeTheme) scheduleThemeArt();
+  updateWallpaper();
 }
 function recordLongTasks(entries) {
   for (const entry of entries) {
@@ -262,6 +309,11 @@ function updateMonthlyPalette() {
     root.dataset.atmosphere = theme.name;
     activeTheme = theme;
   }
+  updateWallpaper();
+  for (const button of document.querySelectorAll("[data-featured-theme], [data-month-theme]")) {
+    button.setAttribute("aria-pressed", String((button.dataset.featuredTheme || button.dataset.monthTheme) === theme.id));
+  }
+  byId("featured-theme-status").textContent = (demoTheme ? "Prévia: " : "Atmosfera: ") + (featuredNames[theme.id] || theme.label);
   scheduleThemeArt();
   const label = (demoTheme ? "Prévia: " : "Tema atual: ") + theme.label;
   if (byId("theme-current").textContent !== label) byId("theme-current").textContent = label;
@@ -307,6 +359,33 @@ function ensureThemeOptions() {
     }
     byId(id).appendChild(fragment);
   }
+  const gallery = byId("monthly-themes");
+  for (const theme of themes.slice(0, 12)) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "month-choice secondary";
+    button.dataset.monthTheme = theme.id;
+    button.setAttribute("aria-pressed", String(activeTheme && activeTheme.id === theme.id));
+    const image = document.createElement("img");
+    image.alt = "";
+    image.loading = "lazy";
+    if (connection && connection.saveData) image.hidden = true;
+    else image.src = "assets/wallpapers/" + theme.id + "-small.webp";
+    image.width = 160;
+    image.height = 100;
+    const label = document.createElement("span");
+    label.textContent = theme.label;
+    button.append(image, label);
+    button.addEventListener("click", () => {
+      if (demoTheme) closeDemo();
+      preferences.mode = "manual";
+      preferences.manualTheme = theme.id;
+      stopMessageAnimation();
+      syncPreferences(); savePreferences();
+      announce("Atmosfera selecionada: " + theme.label + ".");
+    });
+    gallery.appendChild(button);
+  }
   themeOptionsReady = true;
 }
 byId("theme-mode").addEventListener("change", () => {
@@ -323,6 +402,16 @@ byId("theme-choice").addEventListener("change", () => {
 byId("random-theme").addEventListener("click", () => {
   if (!demoTheme) { chooseRandomTheme(); updateMonthlyPalette(); }
 });
+for (const button of document.querySelectorAll("[data-featured-theme]")) {
+  button.addEventListener("click", () => {
+    preferences.mode = "manual";
+    preferences.manualTheme = button.dataset.featuredTheme;
+    stopMessageAnimation();
+    syncPreferences();
+    savePreferences();
+    announce("Atmosfera selecionada: " + featuredNames[preferences.manualTheme] + ".");
+  });
+}
 function closeDemo() {
   demoTheme = null;
   previewPreferences = null;
@@ -624,6 +713,14 @@ byId("stop-reading").addEventListener("click", () => {
 const AudioEngine = window.AudioContext || window.webkitAudioContext;
 let audioContext;
 let soundEnabled = false;
+function syncSoundControls() {
+  byId("sound").setAttribute("aria-pressed", String(soundEnabled));
+  byId("sound").textContent = soundEnabled ? "Som: ligado" : "Som: desligado";
+  const quick = byId("quick-sound");
+  quick.setAttribute("aria-pressed", String(soundEnabled));
+  quick.setAttribute("aria-label", soundEnabled ? "Desativar som breve das mensagens" : "Ativar som breve das mensagens");
+  quick.querySelector("span").textContent = soundEnabled ? "Som ligado" : "Som desligado";
+}
 let soundRequest = 0;
 let lastSoundAt = -Infinity;
 const audioNodes = new Set();
@@ -657,8 +754,7 @@ function releaseAudio() {
   noiseBuffer = null;
   lastSoundAt = -Infinity;
   soundEnabled = false;
-  byId("sound").setAttribute("aria-pressed", "false");
-  byId("sound").textContent = "Som: desligado";
+  syncSoundControls();
   if (context && context.state !== "closed") {
     try { const closing = context.close(); if (closing && closing.catch) closing.catch(() => {}); } catch (_) {}
   }
@@ -677,6 +773,7 @@ function suspendOptionalResources() {
   byId("vibration").setAttribute("aria-pressed", "false");
   byId("vibration").textContent = "Vibração: desligada";
   if (typeof navigator.vibrate === "function") { try { navigator.vibrate(0); } catch (_) {} }
+  updateWallpaper();
 }
 window.addEventListener("pagehide", () => {
   window.clearTimeout(paletteTimer);
@@ -700,11 +797,11 @@ function scheduleSoundPreparation() {
   } else afterPaint(prepareNoiseBuffer);
 }
 byId("sound").disabled = !AudioEngine;
-byId("sound").addEventListener("click", async () => {
+byId("quick-sound").disabled = !AudioEngine;
+async function toggleSound() {
   const request = ++soundRequest;
   soundEnabled = !soundEnabled;
-  byId("sound").setAttribute("aria-pressed", String(soundEnabled));
-  byId("sound").textContent = soundEnabled ? "Som: ligado" : "Som: desligado";
+  syncSoundControls();
   if (!soundEnabled) { releaseAudio(); return; }
 
   try {
@@ -722,7 +819,9 @@ byId("sound").addEventListener("click", async () => {
     releaseAudio();
     announce("O som não está disponível neste navegador. As mensagens continuam funcionando.");
   }
-});
+}
+byId("sound").addEventListener("click", toggleSound);
+byId("quick-sound").addEventListener("click", toggleSound);
 function playMonthlySound() {
   if (!soundEnabled || !audioContext || audioContext.state !== "running" || document.hidden) return;
   if (speechUtterance) { suspendIdleAudio(); return; }
