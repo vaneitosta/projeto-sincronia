@@ -485,16 +485,32 @@ function closeResetConfirmation(restoreFocus = true) {
   byId("reset-settings").setAttribute("aria-expanded", "false");
   if (restoreFocus) byId("reset-settings").focus();
 }
+let settingsScrollPosition = null;
+function lockSettingsScroll() {
+  if (settingsScrollPosition) return;
+  settingsScrollPosition = {x: window.scrollX, y: window.scrollY};
+  document.body.style.setProperty("--settings-scroll-top", -settingsScrollPosition.y + "px");
+  root.classList.add("settings-open");
+  document.body.classList.add("settings-open");
+}
+function unlockSettingsScroll() {
+  const previousScroll = settingsScrollPosition;
+  settingsScrollPosition = null;
+  root.classList.remove("settings-open");
+  document.body.classList.remove("settings-open");
+  document.body.style.removeProperty("--settings-scroll-top");
+  if (previousScroll) window.scrollTo(previousScroll.x, previousScroll.y);
+}
 function closeSettings() {
   stopSpeech();
   if (demoTheme) closeDemo();
   closeResetConfirmation(false);
   if (panel.open) panel.close();
   panel.hidden = true;
-  document.body.classList.remove("settings-open");
+  unlockSettingsScroll();
   byId("settings-status").textContent = "";
   access.setAttribute("aria-expanded", "false");
-  access.focus();
+  access.focus({preventScroll: true});
 }
 byId("close-access").addEventListener("click", closeSettings);
 byId("size").addEventListener("change", () => {
@@ -508,9 +524,14 @@ access.addEventListener("click", () => {
   if (!panel.hidden) { closeSettings(); return; }
   ensureThemeOptions();
   syncPreferences();
+  lockSettingsScroll();
   panel.hidden = false;
-  panel.showModal();
-  document.body.classList.add("settings-open");
+  try { panel.showModal(); }
+  catch (error) {
+    panel.hidden = true;
+    unlockSettingsScroll();
+    throw error;
+  }
   byId("access-title").focus();
   prepareSpeech();
   access.setAttribute("aria-expanded", String(!panel.hidden));
@@ -530,7 +551,7 @@ const settingsCategories = {
   accessibility: [".reading-settings", ".appearance-settings"],
   appearance: [".theme-settings", ".quality-settings"],
   sound: [".sensory-settings"],
-  preferences: [".reset-settings"]
+  preferences: [".privacy-settings", ".reset-settings"]
 };
 function selectSettingsCategory(category) {
   if (!Object.hasOwn(settingsCategories, category)) return;
@@ -541,7 +562,10 @@ function selectSettingsCategory(category) {
     button.setAttribute("aria-pressed", String(button.dataset.settingsCategory === category));
   }
   for (const [key, selectors] of Object.entries(settingsCategories)) {
-    for (const selector of selectors) panel.querySelector(selector).hidden = key !== category;
+    for (const selector of selectors) {
+      const section = panel.querySelector(selector);
+      if (section) section.hidden = key !== category;
+    }
   }
   for (const note of panel.querySelectorAll("[data-settings-note]")) {
     note.hidden = note.dataset.settingsNote !== category;
