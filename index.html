@@ -27,8 +27,8 @@
   <meta name="twitter:image" content="https://vaneitosta.github.io/projeto-sincronia/assets/social-preview-v2.jpg">
   <meta name="twitter:image:alt" content="SINCRONIA. Um instante para você, com fundo lilás suave.">
   <title>Sincronia — Um encontro com seus próprios pensamentos</title>
-  <link rel="stylesheet" href="css/styles.css?v=20261027-previa">
-  <script src="js/main.js?v=20261027-link" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261027-refino">
+  <script src="js/main.js?v=20261027-refino" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
@@ -76,10 +76,10 @@
       <dialog id="access-panel" aria-labelledby="access-title" hidden>
         <header class="settings-header"><h2 id="access-title" tabindex="-1">Configurações</h2><button id="close-access" class="secondary icon-close" type="button" aria-label="Fechar configurações" title="Fechar configurações">×</button></header>
         <nav class="settings-navigation" aria-label="Categorias das configurações">
-          <button type="button" class="secondary" data-settings-category="accessibility" aria-pressed="true"><span aria-hidden="true">◉</span> Acessibilidade</button>
-          <button type="button" class="secondary" data-settings-category="appearance" aria-pressed="false"><span aria-hidden="true">◐</span> Aparência</button>
-          <button type="button" class="secondary" data-settings-category="sound" aria-pressed="false"><span aria-hidden="true">♪</span> Som</button>
-          <button type="button" class="secondary" data-settings-category="preferences" aria-pressed="false"><span aria-hidden="true">↺</span> Preferências</button>
+          <button type="button" class="secondary" data-settings-category="accessibility" aria-pressed="true">Acessibilidade</button>
+          <button type="button" class="secondary" data-settings-category="appearance" aria-pressed="false">Aparência</button>
+          <button type="button" class="secondary" data-settings-category="sound" aria-pressed="false">Som</button>
+          <button type="button" class="secondary" data-settings-category="preferences" aria-pressed="false">Preferências</button>
         </nav>
         <div class="settings-content" tabindex="0" role="region" aria-label="Opções da categoria selecionada">
         <p data-settings-note="accessibility">O site pode ser utilizado sem áudio ou comandos de voz. As mensagens são escritas e podem ser lidas por tecnologias assistivas.</p>
@@ -157,6 +157,12 @@
             <button type="button" id="vibration" aria-pressed="false" hidden>Vibração: desligada</button>
           </div>
           <p id="vibration-availability" role="status"></p>
+        </section>
+        <section class="privacy-settings" aria-labelledby="privacy-title">
+          <h3 id="privacy-title">Sua privacidade</h3>
+          <p>As mensagens são escolhidas no seu aparelho. O Sincronia não pede cadastro, não usa microfone e não instala cookies de rastreamento.</p>
+          <p>Salvamos apenas suas preferências neste navegador. Ao restaurar as configurações, essas preferências salvas são apagadas.</p>
+          <p>Ao compartilhar, o aplicativo escolhido recebe a mensagem e o link do site. A hospedagem e esses aplicativos têm suas próprias políticas de privacidade.</p>
         </section>
         <section class="reset-settings" aria-labelledby="reset-title">
           <h3 id="reset-title">Restaurar preferências</h3>
