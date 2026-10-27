@@ -447,6 +447,9 @@ body.settings-open { overflow: hidden; }
 }
 
 /* Composição aprovada: o fundo é uma imagem; mensagem e controles são HTML. */
+.official-site { margin-top: 1.25rem; }
+.official-site a { color: inherit; overflow-wrap: anywhere; text-underline-offset: .2em; }
+.official-site a:focus-visible { outline: .2rem solid currentColor; outline-offset: .2rem; }
 body { padding-top: max(7rem, calc(env(safe-area-inset-top) + 6rem)); }
 main { max-width: 56rem; }
 .wallpaper {
