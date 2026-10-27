@@ -593,3 +593,15 @@ button:focus:not(:focus-visible) { outline: none; }
   .corner-tools .corner-action { width: 2.75rem; min-height: 2.75rem; padding: .55rem; }
   .corner-tools .corner-action span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 }
+
+/* Luz ambiente sutil: somente qualidade máxima, sem novos arquivos ou vídeos. */
+.wallpaper { overflow: hidden; }
+.wallpaper::before { content: none; }
+:root[data-quality="maximum"]:not(.reduced-motion):not(.high-contrast):not(.decoration-off) .wallpaper::before {
+  content: ""; position: absolute; inset: -20% -55%; pointer-events: none;
+  background: linear-gradient(117deg, transparent 32%, #fff0 36%, #ffffff4d 39%, #ffffff0a 43%, transparent 47%, transparent 58%, #ffffff30 61%, transparent 65%);
+  opacity: .22; animation: ambient-light-drift 38s ease-in-out infinite alternate;
+}
+@keyframes ambient-light-drift { from { transform: translate3d(-8%, -2%, 0); opacity: .14; } to { transform: translate3d(8%, 2%, 0); opacity: .28; } }
+:root.settings-open .wallpaper::before { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce), (prefers-contrast: more), (forced-colors: active) { .wallpaper::before { content: none !important; animation: none !important; } }
