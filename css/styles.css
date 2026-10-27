@@ -460,7 +460,7 @@ body.settings-open { position: fixed; top: var(--settings-scroll-top, 0px); left
 .card-panel { max-width: 38rem; margin: 2rem auto; padding: 1.25rem; background: var(--bg); color: var(--ink); border: 1px solid var(--muted); border-radius: 1rem; text-align: left; scroll-margin-top: 1rem; }
 .card-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .card-heading h2 { font: 1.4rem/1.35 Georgia, serif; margin: 0; }
-.card-heading button { padding: .5rem .75rem; font-size: .8rem; }
+.card-heading button { padding: .5rem .75rem; font-size: .8rem; flex-shrink: 0; white-space: nowrap; }
 .card-panel p { font-size: .9rem; line-height: 1.6; }
 .card-panel label { display: block; margin-block: 1rem .5rem; }
 #card-preview { display: block; max-width: 100%; width: auto; height: auto; max-height: 28rem; margin: 1rem auto; border-radius: .5rem; }
