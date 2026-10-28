@@ -89,11 +89,24 @@ byId("share").addEventListener("click",event=>{
   event.preventDefault();event.stopImmediatePropagation();
   open.click();
 },true);
+byId("share-card-link")?.addEventListener("click",async()=>{
+  if(sharing||!message.textContent.trim())return;
+  if(typeof navigator.share!=="function"){byId("copy-card-caption").click();return;}
+  const linkButton=byId("share-card-link");
+  sharing=true;linkButton.disabled=true;nativeShare.disabled=true;open.disabled=true;byId("card-format").disabled=true;
+  try{await navigator.share({title:"SINCRONIA",text:byId("card-caption").value});status.textContent="Mensagem e link enviados ao compartilhamento do aparelho. A prévia é exibida pelo aplicativo de destino.";}
+  catch(error){status.textContent=error?.name==="AbortError"?"Compartilhamento cancelado ou sem destino disponível.":"Não foi possível compartilhar o link. Use Copiar legenda e link.";}
+  finally{
+    sharing=false;linkButton.disabled=false;open.disabled=!message.textContent.trim();byId("card-format").disabled=false;
+    let supported=false;try{supported=!!readyFile&&typeof navigator.canShare==="function"&&navigator.canShare({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value});}catch(_){}
+    nativeShare.disabled=!supported;
+  }
+});
 nativeShare.addEventListener("click",async()=>{
-  if(!readyFile||sharing)return;sharing=true;open.disabled=true;nativeShare.disabled=true;byId("card-format").disabled=true;
+  if(!readyFile||sharing)return;sharing=true;if(byId("share-card-link"))byId("share-card-link").disabled=true;open.disabled=true;nativeShare.disabled=true;byId("card-format").disabled=true;
   try{await navigator.share({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value});status.textContent="Imagem, mensagem e link enviados ao compartilhamento do aparelho. Confira o conteúdo no aplicativo antes de publicar.";}
   catch(error){status.textContent=error?.name==="AbortError"?"Compartilhamento cancelado ou sem destino disponível. Você pode baixar a imagem.":"Não foi possível compartilhar a imagem. Use Baixar imagem e publique pelo aplicativo.";}
-  finally{sharing=false;open.disabled=!message.textContent.trim();byId("card-format").disabled=false;nativeShare.disabled=!readyFile;}
+  finally{sharing=false;if(byId("share-card-link"))byId("share-card-link").disabled=false;open.disabled=!message.textContent.trim();byId("card-format").disabled=false;nativeShare.disabled=!readyFile;}
 });
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!event.defaultPrevented&&!panel.hidden&&panel.contains(document.activeElement)){event.preventDefault();closeCard();}});
 new MutationObserver(()=>{open.disabled=sharing||!message.textContent.trim();if(!panel.hidden)renderCard();}).observe(message,{childList:true,characterData:true,subtree:true});
