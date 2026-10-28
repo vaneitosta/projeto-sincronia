@@ -147,28 +147,8 @@ let previewPreferences = null;
 let demoTheme = null;
 let randomTheme = null;
 let activeTheme = null;
-let renderedArt = null;
-let artPending = false;
-function scheduleThemeArt() {
-  if (artPending || document.hidden || optionalSuspended || currentPreferences().decorationOff || renderedArt === activeTheme.id + ":" + effectiveQuality) return;
-  artPending = true;
-  afterPaint(() => {
-    artPending = false;
-    if (document.hidden || currentPreferences().decorationOff) return;
-    try {
-      const art = byId("atmosphere-art");
-      if (art) {
-        let markup = activeTheme.art;
-        if (effectiveQuality === "economy") markup = (markup.match(/<(?:path|circle|rect)\b[^>]*\/>/) || [""])[0];
-        if (effectiveQuality === "maximum") markup += '<g opacity=".2" transform="translate(18 12)">' + activeTheme.art + '</g>';
-        art.innerHTML = markup;
-        renderedArt = activeTheme.id + ":" + effectiveQuality;
-      }
-    } catch (_) { /* SVG decorativo nunca bloqueia mensagens. */ }
-  });
-}
 const currentPreferences = () => previewPreferences || preferences;
-const qualityNames = {economy:"Econômica", balanced:"Equilibrada", maximum:"Máxima"};
+const qualityNames = {economy:"Econômica", balanced:"Equilibrada", maximum:"Ultra"};
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 let effectiveQuality = "economy";
 let automaticQuality = "economy";
@@ -197,13 +177,11 @@ function applyQuality() {
     stopMessageAnimation();
     effectiveQuality = level;
     root.dataset.quality = level;
-    renderedArt = null;
   }
   byId("quality-mode").value = prefs.quality;
   const text = "Nível aplicado: " + qualityNames[level] + ". " + (limit || (prefs.quality === "auto"
     ? "Seleção automática conservadora; sem monitoramento contínuo." : "Escolha manual."));
   if (byId("quality-status").textContent !== text) byId("quality-status").textContent = text;
-  if (activeTheme) scheduleThemeArt();
   updateWallpaper();
 }
 function recordLongTasks(entries) {
@@ -314,7 +292,6 @@ function updateMonthlyPalette() {
     button.setAttribute("aria-pressed", String((button.dataset.featuredTheme || button.dataset.monthTheme) === theme.id));
   }
   byId("featured-theme-status").textContent = (demoTheme ? "Prévia: " : "Atmosfera: ") + (featuredNames[theme.id] || theme.label);
-  scheduleThemeArt();
   const label = (demoTheme ? "Prévia: " : "Tema atual: ") + theme.label;
   if (byId("theme-current").textContent !== label) byId("theme-current").textContent = label;
   document.querySelector('meta[name="theme-color"]').setAttribute("content",
@@ -794,7 +771,6 @@ function releaseAudio() {
 function suspendOptionalResources() {
   optionalSuspended = true;
   for (const cancel of [...optionalJobs]) cancel();
-  artPending = false;
   sensoryRequest++;
   stopMessageAnimation();
   if (evaluationRunning) finishQualityEvaluation(false);
