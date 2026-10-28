@@ -72,7 +72,7 @@ async function renderCard() {
     readyFile=new File([blob],"sincronia-"+family+"-"+format+".jpg",{type:"image/jpeg"});
     objectURL=URL.createObjectURL(blob);preview.src=objectURL;preview.alt="Cartão SINCRONIA: "+text;preview.hidden=false;
     download.href=objectURL;download.download=readyFile.name;download.hidden=false;
-    let supported=false;try{supported=typeof navigator.share==="function"&&typeof navigator.canShare==="function"&&navigator.canShare({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value,url:publicURL});}catch(_){}
+    let supported=false;try{supported=typeof navigator.share==="function"&&typeof navigator.canShare==="function"&&navigator.canShare({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value});}catch(_){}
     nativeShare.disabled=!supported;
     status.textContent="Imagem pronta · "+width+" × "+height+"."+(decorative&&!image?" O fundo não carregou; usamos a cor do tema.":"")+(supported?"":" Para publicar neste aparelho, use Baixar imagem.");
   }catch(_){if(token===revision){clearImage();status.textContent="Não foi possível criar a imagem. Sua legenda está disponível abaixo para copiar.";}}
@@ -91,7 +91,7 @@ byId("share").addEventListener("click",event=>{
 },true);
 nativeShare.addEventListener("click",async()=>{
   if(!readyFile||sharing)return;sharing=true;open.disabled=true;nativeShare.disabled=true;byId("card-format").disabled=true;
-  try{await navigator.share({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value,url:publicURL});status.textContent="Imagem, mensagem e link enviados ao compartilhamento do aparelho. Confira o conteúdo no aplicativo antes de publicar.";}
+  try{await navigator.share({files:[readyFile],title:"SINCRONIA",text:byId("card-caption").value});status.textContent="Imagem, mensagem e link enviados ao compartilhamento do aparelho. Confira o conteúdo no aplicativo antes de publicar.";}
   catch(error){status.textContent=error?.name==="AbortError"?"Compartilhamento cancelado ou sem destino disponível. Você pode baixar a imagem.":"Não foi possível compartilhar a imagem. Use Baixar imagem e publique pelo aplicativo.";}
   finally{sharing=false;open.disabled=!message.textContent.trim();byId("card-format").disabled=false;nativeShare.disabled=!readyFile;}
 });
